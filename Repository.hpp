@@ -8,7 +8,7 @@
 class Repository
 {
 public:
-    Repository(const QDir& dir);
+    explicit Repository(const QDir& dir);
     QStringList getCategories() const;
     const QDir& getDir() const;
     QString getName() const;
