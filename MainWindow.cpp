@@ -1,42 +1,26 @@
 #include "MainWindow.hpp"
 #include "ui_MainWindow.h"
 
-#include <QProcess>
-#include <QTextStream>
+#include <QStringList>
 
 MainWindow::MainWindow(QWidget *parent)
     :QMainWindow(parent)
     ,ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    connect(ui->treeWidget, SIGNAL(itemSelectionChanged()), this, SLOT(categoryChanged()));
 
-    QProcess process;
-    process.start("emerge --info", QProcess::ReadOnly);
-    process.waitForFinished();
-    QTextStream info(process.readAllStandardOutput());
-    while(!info.atEnd())
+    for(Repositories::const_iterator iter = m_Portage.getRepositories().constBegin(); iter != m_Portage.getRepositories().constEnd(); ++iter)
     {
-        QString str = info.readLine();
-        m_Info.insert(str.section('=', 0, 0, QString::SectionSkipEmpty), str.section('"', 1, 1, QString::SectionSkipEmpty));
-    }
-
-    QStringList strlRepositories = m_Info.value("PORTDIR_OVERLAY").split(' ', QString::SkipEmptyParts);
-    strlRepositories.append(m_Info.value("PORTDIR"));
-    for(QStringList::const_iterator iter = strlRepositories.begin(); iter != strlRepositories.end(); ++iter)
-    {
-        Repository item(*iter);
-        m_Repositories.insert(item.getName(), item);
-        QTreeWidgetItem* twItem = new QTreeWidgetItem(QStringList(item.getName()));
+        QTreeWidgetItem* twItem = new QTreeWidgetItem(QStringList(iter->getName()));
         ui->treeWidget->addTopLevelItem(twItem);
-        QStringList strlCategories = item.getCategories();
-        for(QStringList::const_iterator sub_iter = strlCategories.begin(); sub_iter != strlCategories.end(); ++sub_iter)
+        auto setCategories = iter->getCategories();
+        for(auto sub_iter = setCategories.begin(); sub_iter != setCategories.end(); ++sub_iter)
         {
             QTreeWidgetItem* twSubItem = new QTreeWidgetItem(twItem, QStringList(*sub_iter));
             ui->treeWidget->addTopLevelItem(twSubItem);
         }
     }
-
-    connect(ui->treeWidget, SIGNAL(itemSelectionChanged()), this, SLOT(categoryChanged()));
 }
 
 MainWindow::~MainWindow()
@@ -47,9 +31,13 @@ MainWindow::~MainWindow()
 void MainWindow::categoryChanged()
 {
     QTreeWidgetItem* selected = ui->treeWidget->selectedItems().first();
-    if(selected && selected->parent())
+    if(selected && selected->parent() && m_Portage.getRepositories().contains(selected->parent()->text(0)))
     {
-        selected->text(0);
-        selected->parent()->text(0);
+        QStringList strlPackages = m_Portage.getRepository(selected->parent()->text(0)).getPackages(selected->text(0));
+        ui->tableWidget->setRowCount(strlPackages.length());
+        for(QStringList::iterator iter = strlPackages.begin(); iter != strlPackages.end(); ++iter)
+        {
+            ui->tableWidget->setItem((strlPackages.end() - iter) - 1, 0, new QTableWidgetItem(*iter));
+        }
     }
 }

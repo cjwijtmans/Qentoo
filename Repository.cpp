@@ -1,41 +1,60 @@
 #include "Repository.hpp"
 
 #include <QDir>
+#include <QDirIterator>
 #include <QFile>
+#include <QString>
+#include <QStringList>
 #include <QTextStream>
+#include <QDebug>
 
-Repository::Repository(const QDir &dir)
-    :m_Dir(dir)
+Repository::Repository(Portage* portage)
+    :m_Portage(portage)
 {
 }
 
-QStringList Repository::getCategories() const
+Repository::Repository(const QDir &dir, Portage* portage)
+    :m_Parser(dir)
+    ,m_Portage(portage)
 {
-    QStringList strls;
-    QFile file(m_Dir.filePath("profiles/categories"));
-    if(file.open(QIODevice::ReadOnly))
+}
+
+Categories Repository::getCategories() const
+{
+    Categories categories(m_Parser.getCategories());
+    if(m_Portage)
     {
-        QTextStream stream(&file);
-        while(!stream.atEnd())
-            strls.append(stream.readLine());
-        file.close();
+        QStringList strlsMasters = getMasters();
+        for(QStringList::const_iterator iter = strlsMasters.constBegin(); iter != strlsMasters.constEnd(); ++iter)
+        {
+            QDebug(QtDebugMsg) << *iter;
+            categories.unite(m_Portage->getRepository(*iter).getCategories());
+        }
     }
-    return strls;
+    return categories;
 }
 
 const QDir& Repository::getDir() const
 {
-    return m_Dir;
+    return m_Parser.getDir();
+}
+
+QStringList Repository::getMasters() const
+{
+    return m_Parser.getMasters();
 }
 
 QString Repository::getName() const
 {
-    QFile file(m_Dir.filePath("profiles/repo_name"));
-    file.open(QIODevice::ReadOnly);
-    return QTextStream(&file).readLine();
+    return m_Parser.getName();
+}
+
+const RepositoryParser& Repository::getParser() const
+{
+    return m_Parser;
 }
 
 QStringList Repository::getPackages(const QString& strCategory) const
 {
-    return QDir(m_Dir.filePath(strCategory)).entryList(QDir::Dirs | QDir::NoDotAndDotDot);
+    return m_Parser.getPackages(strCategory);
 }

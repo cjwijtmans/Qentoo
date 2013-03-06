@@ -14,9 +14,20 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         MainWindow.cpp \
-    Repository.cpp
+    Repository.cpp \
+    Portage.cpp \
+    RepositoryParser.cpp \
+    PackageParser.cpp
 
 HEADERS  += MainWindow.hpp \
-    Repository.hpp
+    Repository.hpp \
+    Portage.hpp \
+    Repositories.hpp \
+    Categories.hpp \
+    Packages.hpp \
+    RepositoryParser.hpp \
+    PackageParser.hpp
 
 FORMS    += MainWindow.ui
+
+QMAKE_CXXFLAGS += -std=c++0x

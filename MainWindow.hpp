@@ -1,11 +1,9 @@
 #ifndef MAINWINDOW_HPP
 #define MAINWINDOW_HPP
 
-#include "Repository.hpp"
+#include "Portage.hpp"
 
 #include <QMainWindow>
-#include <QMap>
-#include <QTreeWidgetItem>
 
 namespace Ui {
 class MainWindow;
@@ -24,8 +22,7 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-    QMap<QString, QString> m_Info;
-    QMap<QString, Repository> m_Repositories;
+    Portage m_Portage;
 };
 
 #endif // MAINWINDOW_HPP
