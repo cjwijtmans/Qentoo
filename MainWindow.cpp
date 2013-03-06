@@ -4,10 +4,9 @@
 #include <QProcess>
 #include <QTextStream>
 
-MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::MainWindow),
-    gentoo(QDir("/usr/portage/"))
+MainWindow::MainWindow(QWidget *parent)
+    :QMainWindow(parent)
+    ,ui(new Ui::MainWindow)
 {
     QProcess process;
     process.start("emerge --info", QIODevice::ReadOnly);
@@ -20,9 +19,9 @@ MainWindow::MainWindow(QWidget *parent) :
     }
 
     ui->setupUi(this);
-    QTreeWidgetItem* tiGentoo = new QTreeWidgetItem(QStringList(gentoo.getName()));
-    ui->treeWidget->addTopLevelItem(tiGentoo);
-    gentoo.getCategories(callbackCategories(*this, tiGentoo));
+    //QTreeWidgetItem* tiGentoo = new QTreeWidgetItem(QStringList(gentoo.getName()));
+    //ui->treeWidget->addTopLevelItem(tiGentoo);
+    //gentoo.getCategories();
     connect(ui->treeWidget, SIGNAL(itemSelectionChanged()), this, SLOT(categoryChanged()));
 }
 
@@ -39,15 +38,4 @@ void MainWindow::categoryChanged()
         selected->text(0);
         selected->parent()->text(0);
     }
-}
-
-MainWindow::callbackCategories::callbackCategories(MainWindow& parent, QTreeWidgetItem* item)
-    :m_Parent(parent)
-    ,m_Item(item)
-{
-}
-
-void MainWindow::callbackCategories::operator()(const QString& strCategory)
-{
-    m_Parent.ui->treeWidget->addTopLevelItem(new QTreeWidgetItem(m_Item, QStringList(strCategory)));
 }

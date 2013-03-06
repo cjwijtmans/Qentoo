@@ -9,7 +9,7 @@ class Repository
 {
 public:
     Repository(const QDir& dir);
-    template<class t_Callback> void getCategories(t_Callback callback) const;
+    QStringList getCategories() const;
     const QDir& getDir() const;
     QString getName() const;
     QStringList getPackages(const QString& strCategory) const;

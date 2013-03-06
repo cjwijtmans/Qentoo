@@ -23,21 +23,9 @@ private slots:
     void categoryChanged();
 
 private:
-    class callbackCategories
-    {
-    public:
-        callbackCategories(MainWindow& parent, QTreeWidgetItem* item);
-        void operator()(const QString& strCategory);
-
-    private:
-        MainWindow& m_Parent;
-        QTreeWidgetItem* m_Item;
-    };
-
     Ui::MainWindow *ui;
     QMap<QString, QString> m_Info;
     QMap<QString, Repository> m_Repositories;
-    Repository gentoo;
 };
 
 #endif // MAINWINDOW_HPP

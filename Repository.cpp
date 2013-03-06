@@ -9,14 +9,18 @@ Repository::Repository(const QDir &dir)
 {
 }
 
-template<class t_Callback>
-void Repository::getCategories(t_Callback callback) const
+QStringList Repository::getCategories() const
 {
+    QStringList strls;
     QFile file(m_Dir.filePath("profiles/categories"));
-    file.open(QIODevice::ReadOnly);
-    QTextStream stream(&file);
-    while(!stream.atEnd())
-        callback(stream.readLine());
+    if(file.open(QIODevice::ReadOnly))
+    {
+        QTextStream stream(&file);
+        while(!stream.atEnd())
+            strls.append(stream.readLine());
+        file.close();
+    }
+    return strls;
 }
 
 const QDir& Repository::getDir() const
