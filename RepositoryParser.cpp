@@ -3,7 +3,6 @@
 #include <QDir>
 #include <QDirIterator>
 #include <QFile>
-#include <QSet>
 #include <QString>
 #include <QTextStream>
 
@@ -16,11 +15,11 @@ RepositoryParser::RepositoryParser(const QDir &dir)
 {
 }
 
-QSet<QString> RepositoryParser::getCategories() const
+Categories RepositoryParser::getCategories() const
 {
-    QSet<QString> categories;
+    Categories categories;
     QFile file(m_Dir.filePath("profiles/categories"));
-    if(file.open(QIODevice::ReadOnly))
+    if(file.open(QFile::ReadOnly))
     {
         QTextStream stream(&file);
         while(!stream.atEnd())
@@ -35,7 +34,7 @@ const QDir& RepositoryParser::getDir() const
     return m_Dir;
 }
 
-QSet<QString> RepositoryParser::getMasters() const
+Masters RepositoryParser::getMasters() const
 {
     QFile file(m_Dir.filePath("metadata/layout.conf"));
     if(file.open(QFile::ReadOnly))
@@ -45,11 +44,11 @@ QSet<QString> RepositoryParser::getMasters() const
         {
             QString str = stream.readLine();
             if(str.leftRef(str.indexOf('=')).indexOf("masters") > 0)
-                return QSet<QString>::fromList(str.section('=', 1, 1, QString::SectionSkipEmpty).split(' ', QString::SkipEmptyParts));
+                return Masters::fromList(str.section('=', 1, 1, QString::SectionSkipEmpty).split(' ', QString::SkipEmptyParts));
         }
         file.close();
     }
-    return QSet<QString>();
+    return Masters();
 }
 
 QString RepositoryParser::getName() const
@@ -59,8 +58,8 @@ QString RepositoryParser::getName() const
     return QTextStream(&file).readAll();
 }
 
-QSet<QString> RepositoryParser::getPackages(const QString& strCategory) const
+Packages RepositoryParser::getPackages(const QString& strCategory) const
 {
     //QDirIterator dirIter(m_Dir.filePath(strCategory));
-    return QSet<QString>::fromList(QDir(m_Dir.filePath(strCategory)).entryList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name));
+    return Packages::fromList(QDir(m_Dir.filePath(strCategory)).entryList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name));
 }

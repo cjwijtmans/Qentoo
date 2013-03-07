@@ -22,12 +22,7 @@ SOURCES += main.cpp\
 HEADERS  += MainWindow.hpp \
     Repository.hpp \
     Portage.hpp \
-    Repositories.hpp \
-    Categories.hpp \
-    Packages.hpp \
     RepositoryParser.hpp \
     PackageParser.hpp
 
 FORMS    += MainWindow.ui
-
-QMAKE_CXXFLAGS += -std=c++0x

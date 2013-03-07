@@ -3,27 +3,29 @@
 
 class Repository;
 
-#include "Categories.hpp"
-#include "Packages.hpp"
 #include "Portage.hpp"
 #include "RepositoryParser.hpp"
 
-#include <QDir>
+#include <QMap>
 #include <QString>
 #include <QStringList>
 
 class Repository
 {
 public:
+    typedef RepositoryParser::Categories Categories;
+    typedef RepositoryParser::Masters Masters;
+    typedef RepositoryParser::Packages Packages;
+    typedef QMap<QString, Repository> Repositories;
+
     Repository(Portage* portage = 0);
-    Repository(const QDir& dir, Portage* portage = 0);
+    Repository(const RepositoryParser& parser, Portage* portage = 0);
     Categories getCategories() const;
     const QDir& getDir() const;
-    QStringList getExistingCategories() const;
     QString getName() const;
-    QStringList getMasters() const;
+    Masters getMasters() const;
     const RepositoryParser& getParser() const;
-    QStringList getPackages(const QString& strCategory) const;
+    Packages getPackages(const QString& strCategory) const;
 
 private:
     RepositoryParser m_Parser;

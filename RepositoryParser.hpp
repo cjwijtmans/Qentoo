@@ -8,13 +8,17 @@
 class RepositoryParser
 {
 public:
+    typedef QSet<QString> Categories;
+    typedef QSet<QString> Masters;
+    typedef QSet<QString> Packages;
+
     RepositoryParser();
     RepositoryParser(const QDir& dir);
-    QSet<QString> getCategories() const;
+    Categories getCategories() const;
     const QDir& getDir() const;
     QString getName() const;
-    QSet<QString> getMasters() const;
-    QSet<QString> getPackages(const QString& strCategory) const;
+    Masters getMasters() const;
+    Packages getPackages(const QString& strCategory) const;
 
 private:
     QDir m_Dir;
