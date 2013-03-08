@@ -1,30 +1,29 @@
 #ifndef PORTAGE_HPP
 #define PORTAGE_HPP
 
-class Portage;
-
-#include "Repository.hpp"
-
-#include <QMap>
-#include <QSet>
 #include <QString>
+
+#include "PortageParser.hpp"
+#include "Repository.hpp"
 
 class Portage
 {
 public:
+    typedef PortageParser::EnvironmentalVariables EnvironmentalVariables;
     typedef Repository::Categories Categories;
     typedef Repository::Packages Packages;
-    typedef QMap<QString, Repository> Repositories;
+    typedef Repository::Repositories Repositories;
 
     Portage();
     Categories getCategories() const;
-    QString getInfo(const QString& key) const;
+    EnvironmentalVariables getEnvironmentalVariables() const;
     Packages getPackages(QString strCategory) const;
+    const PortageParser& getParser() const;
     const Repositories& getRepositories() const;
-    const Repository& getRepository(const QString& name) const;
+    Repository getRepository(const QString& name) const;
 
 private:
-    QMap<QString, QString>  m_Info;
+    PortageParser   m_Parser;
     Repositories    m_Repositories;
 };
 

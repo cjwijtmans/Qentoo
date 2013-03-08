@@ -17,12 +17,14 @@ SOURCES += main.cpp\
     Repository.cpp \
     Portage.cpp \
     RepositoryParser.cpp \
-    PackageParser.cpp
+    PackageParser.cpp \
+    PortageParser.cpp
 
 HEADERS  += MainWindow.hpp \
     Repository.hpp \
     Portage.hpp \
     RepositoryParser.hpp \
-    PackageParser.hpp
+    PackageParser.hpp \
+    PortageParser.hpp
 
 FORMS    += MainWindow.ui

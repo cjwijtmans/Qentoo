@@ -6,16 +6,21 @@
 #include <QString>
 #include <QTextStream>
 
-RepositoryParser::RepositoryParserParser()
+RepositoryParser::RepositoryParser()
 {
 }
 
-RepositoryParser::RepositoryParser(const QDir &dir)
+RepositoryParser::RepositoryParser(const QDir& dir)
     :m_Dir(dir)
 {
 }
 
-Categories RepositoryParser::getCategories() const
+RepositoryParser::RepositoryParser(const QString& dir)
+    :m_Dir(dir)
+{
+}
+
+RepositoryParser::Categories RepositoryParser::getCategories() const
 {
     Categories categories;
     QFile file(m_Dir.filePath("profiles/categories"));
@@ -34,7 +39,7 @@ const QDir& RepositoryParser::getDir() const
     return m_Dir;
 }
 
-Masters RepositoryParser::getMasters() const
+RepositoryParser::Masters RepositoryParser::getMasters() const
 {
     QFile file(m_Dir.filePath("metadata/layout.conf"));
     if(file.open(QFile::ReadOnly))
@@ -58,7 +63,7 @@ QString RepositoryParser::getName() const
     return QTextStream(&file).readAll();
 }
 
-Packages RepositoryParser::getPackages(const QString& strCategory) const
+RepositoryParser::Packages RepositoryParser::getPackages(const QString& strCategory) const
 {
     //QDirIterator dirIter(m_Dir.filePath(strCategory));
     return Packages::fromList(QDir(m_Dir.filePath(strCategory)).entryList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name));

@@ -14,6 +14,7 @@ public:
 
     RepositoryParser();
     RepositoryParser(const QDir& dir);
+    RepositoryParser(const QString& dir);
     Categories getCategories() const;
     const QDir& getDir() const;
     QString getName() const;

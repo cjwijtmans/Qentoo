@@ -1,31 +1,19 @@
 #include "Portage.hpp"
 
+#include <QDebug>
 #include <QProcess>
-#include <QStringList>
-#include <QTextStream>
 
 Portage::Portage()
 {
-    QProcess process;
-    process.start("emerge --info", QProcess::ReadOnly);
-    process.waitForFinished();
-    QTextStream info(process.readAllStandardOutput());
-    while(!info.atEnd())
+    PortageParser::Repositories repositories = m_Parser.getRepositories();
+    for(PortageParser::Repositories::const_iterator iter = repositories.constBegin(); iter != repositories.constEnd(); ++iter)
     {
-        QString str = info.readLine();
-        m_Info.insert(str.section('=', 0, 0, QString::SectionSkipEmpty), str.section('"', 1, 1, QString::SectionSkipEmpty));
-    }
-
-    QStringList strlRepositories = m_Info.value("PORTDIR_OVERLAY").split(' ', QString::SkipEmptyParts);
-    strlRepositories.append(m_Info.value("PORTDIR"));
-    for(QStringList::const_iterator iter = strlRepositories.constBegin(); iter != strlRepositories.constEnd(); ++iter)
-    {
-        Repository repository(*iter, this);
+        Repository repository(*iter, &this->m_Repositories);
         m_Repositories.insert(repository.getName(), repository);
     }
 }
 
-Categories Portage::getCategories() const
+Portage::Categories Portage::getCategories() const
 {
     Categories categories;
     for(Repositories::const_iterator iter = m_Repositories.constBegin(); iter != m_Repositories.constEnd(); ++iter)
@@ -33,18 +21,18 @@ Categories Portage::getCategories() const
     return categories;
 }
 
-QString Portage::getInfo(const QString& key) const
+Portage::EnvironmentalVariables Portage::getEnvironmentalVariables() const
 {
-    return m_Info.value(key);
+    return m_Parser.getEnvironmentalVariables();
 }
 
-const Repositories& Portage::getRepositories() const
+const Portage::Repositories& Portage::getRepositories() const
 {
     return m_Repositories;
 }
 
-const Repository& Portage::getRepository(const QString& name) const
+Repository Portage::getRepository(const QString& name) const
 {
-    return *m_Repositories.find(name);
+    return m_Repositories.value(name);
 }
 

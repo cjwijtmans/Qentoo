@@ -1,14 +1,11 @@
 #ifndef REPOSITORY_HPP
 #define REPOSITORY_HPP
 
-class Repository;
-
-#include "Portage.hpp"
-#include "RepositoryParser.hpp"
-
 #include <QMap>
 #include <QString>
 #include <QStringList>
+
+#include "RepositoryParser.hpp"
 
 class Repository
 {
@@ -18,8 +15,8 @@ public:
     typedef RepositoryParser::Packages Packages;
     typedef QMap<QString, Repository> Repositories;
 
-    Repository(Portage* portage = 0);
-    Repository(const RepositoryParser& parser, Portage* portage = 0);
+    Repository(Repositories* repositories = 0);
+    Repository(const RepositoryParser& parser, Repositories* repositories = 0);
     Categories getCategories() const;
     const QDir& getDir() const;
     QString getName() const;
@@ -29,7 +26,7 @@ public:
 
 private:
     RepositoryParser m_Parser;
-    Portage* m_Portage;
+    Repositories* m_Repositories;
 };
 
 #endif // REPOSITORY_HPP
