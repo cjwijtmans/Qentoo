@@ -53,6 +53,11 @@ const RepositoryParser& Repository::getParser() const
     return m_Parser;
 }
 
+Repository::Packages Repository::getPackages() const
+{
+    return m_Parser.getPackages();
+}
+
 Repository::Packages Repository::getPackages(const QString& strCategory) const
 {
     return m_Parser.getPackages(strCategory);

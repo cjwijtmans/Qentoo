@@ -17,6 +17,7 @@ public:
     Portage();
     Categories getCategories() const;
     EnvironmentalVariables getEnvironmentalVariables() const;
+    Packages getPackages() const;
     Packages getPackages(QString strCategory) const;
     const PortageParser& getParser() const;
     const Repositories& getRepositories() const;

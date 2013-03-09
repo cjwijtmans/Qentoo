@@ -22,6 +22,7 @@ public:
     QString getName() const;
     Masters getMasters() const;
     const RepositoryParser& getParser() const;
+    Packages getPackages() const;
     Packages getPackages(const QString& strCategory) const;
 
 private:

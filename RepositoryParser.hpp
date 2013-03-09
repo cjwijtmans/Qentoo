@@ -19,6 +19,7 @@ public:
     const QDir& getDir() const;
     QString getName() const;
     Masters getMasters() const;
+    Packages getPackages() const;
     Packages getPackages(const QString& strCategory) const;
 
 private:

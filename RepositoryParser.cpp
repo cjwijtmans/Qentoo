@@ -63,6 +63,12 @@ QString RepositoryParser::getName() const
     return QTextStream(&file).readAll();
 }
 
+RepositoryParser::Packages RepositoryParser::getPackages() const
+{
+    //QDirIterator dirIter(m_Dir.filePath(strCategory));
+    return Packages::fromList(QDir(m_Dir.filePath(strCategory)).entryList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name));
+}
+
 RepositoryParser::Packages RepositoryParser::getPackages(const QString& strCategory) const
 {
     //QDirIterator dirIter(m_Dir.filePath(strCategory));
