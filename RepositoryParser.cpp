@@ -1,5 +1,6 @@
 #include "RepositoryParser.hpp"
 
+#include <QDebug>
 #include <QDir>
 #include <QDirIterator>
 #include <QFile>
@@ -66,11 +67,21 @@ QString RepositoryParser::getName() const
 RepositoryParser::Packages RepositoryParser::getPackages() const
 {
     //QDirIterator dirIter(m_Dir.filePath(strCategory));
-    return Packages::fromList(QDir(m_Dir.filePath(strCategory)).entryList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name));
+    return Packages::fromList(m_Dir.entryList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name));
 }
 
 RepositoryParser::Packages RepositoryParser::getPackages(const QString& strCategory) const
 {
-    //QDirIterator dirIter(m_Dir.filePath(strCategory));
-    return Packages::fromList(QDir(m_Dir.filePath(strCategory)).entryList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name));
+    Packages packages;
+    QDirIterator dirIter(m_Dir.filePath(strCategory));
+    while(dirIter.hasNext())
+    {
+        QFile file(QDir(dirIter.filePath()).filePath("*.ebuild"));
+        QDebug(QtDebugMsg) << file.fileName();
+        if(file.exists())
+            packages.insert(dirIter.fileName());
+        dirIter.next();
+    }
+    return packages;
+    //return Packages::fromList(QDir(m_Dir.filePath(strCategory)).entryList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name));
 }
