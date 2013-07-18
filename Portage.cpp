@@ -8,7 +8,7 @@ Portage::Portage()
     PortageParser::Repositories repositories = m_Parser.getRepositories();
     for(PortageParser::Repositories::const_iterator iter = repositories.constBegin(); iter != repositories.constEnd(); ++iter)
     {
-        Repository repository(*iter, &this->m_Repositories);
+        Repository repository(*iter, &m_Repositories);
         m_Repositories.insert(repository.getName(), repository);
     }
 }

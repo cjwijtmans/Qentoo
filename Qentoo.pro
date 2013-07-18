@@ -25,6 +25,7 @@ HEADERS  += MainWindow.hpp \
     Portage.hpp \
     RepositoryParser.hpp \
     PackageParser.hpp \
-    PortageParser.hpp
+    PortageParser.hpp \
+    main.hpp
 
 FORMS    += MainWindow.ui

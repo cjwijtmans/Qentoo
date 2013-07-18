@@ -3,13 +3,14 @@
 
 #include <QDir>
 #include <QMap>
-#include <QStringList>
+#include <QSet>
+#include <QString>
 
 class PortageParser
 {
 public:
     typedef QMap<QString, QString> EnvironmentalVariables;
-    typedef QStringList Repositories;
+    typedef QSet<QString> Repositories;
 
     PortageParser();
     EnvironmentalVariables getEnvironmentalVariables() const;

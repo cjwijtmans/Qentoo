@@ -7,25 +7,28 @@
 
 PortageParser::PortageParser()
 {
-    QProcess process;
-    process.start("emerge --info", QProcess::ReadOnly);
-    process.waitForFinished();
-    QTextStream info(process.readAllStandardOutput());
-    while(!info.atEnd())
-    {
-        QString str = info.readLine();
-        m_EnvironmentalVariables.insert(str.section('=', 0, 0, QString::SectionSkipEmpty), str.section('"', 1, 1, QString::SectionSkipEmpty));
-    }
 }
 
 PortageParser::EnvironmentalVariables PortageParser::getEnvironmentalVariables() const
 {
-    return m_EnvironmentalVariables;
+    QProcess process;
+    process.start("emerge --info", QProcess::ReadOnly);
+    process.waitForFinished();
+    QTextStream info(process.readAllStandardOutput());
+    process.close();
+    EnvironmentalVariables envars;
+    while(!info.atEnd())
+    {
+        QString str = info.readLine();
+        envars.insert(str.section('=', 0, 0, QString::SectionSkipEmpty), str.section('"', 1, 1, QString::SectionSkipEmpty));
+    }
+    return envars;
 }
 
 PortageParser::Repositories PortageParser::getRepositories() const
 {
-    Repositories strlRepositories = m_EnvironmentalVariables.value("PORTDIR_OVERLAY").split(' ', QString::SkipEmptyParts);
-    strlRepositories.append(m_EnvironmentalVariables.value("PORTDIR"));
-    return strlRepositories;
+    EnvironmentalVariables envars = getEnvironmentalVariables();
+    Repositories repositories = Repositories::fromList(envars.value("PORTDIR_OVERLAY").split(' ', QString::SkipEmptyParts));
+    repositories.insert(envars.value("PORTDIR"));
+    return repositories;
 }

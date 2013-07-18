@@ -1,5 +1,6 @@
 #include "Repository.hpp"
 
+#include <QDebug>
 #include <QDir>
 #include <QDirIterator>
 #include <QFile>
@@ -8,9 +9,19 @@
 #include <QStringList>
 #include <QTextStream>
 
-Repository::Repository(Repositories* repositories)
-    :m_Repositories(repositories)
+
+
+Repository::Repository()
+    :m_Repositories(0)
 {
+    QDebug(QtDebugMsg) << "Uninitialized Repository object.";
+}
+
+Repository::Repository(const Repository& other)
+    :m_Parser(other.m_Parser)
+    ,m_Repositories(other.m_Repositories)
+{
+
 }
 
 Repository::Repository(const RepositoryParser& parser, Repositories* repositories)
@@ -24,12 +35,16 @@ Repository::Categories Repository::getCategories() const
     Categories categories(m_Parser.getCategories());
     if(m_Repositories)
     {
-        Masters strlsMasters = getMasters();
-        for(Masters::const_iterator iter = strlsMasters.constBegin(); iter != strlsMasters.constEnd(); ++iter)
+        Masters masters = getMasters();
+        for(Masters::const_iterator iter = masters.constBegin(); iter != masters.constEnd(); ++iter)
         {
-            categories.unite(m_Repositories->value(*iter).getCategories());
+            if(m_Repositories->contains(*iter))
+            {
+                categories.unite(m_Repositories->find(*iter)->getCategories());
+            }
         }
     }
+    categories.intersect(Categories::fromList(getDir().entryList(QDir::Dirs)));
     return categories;
 }
 

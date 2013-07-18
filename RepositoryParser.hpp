@@ -11,6 +11,7 @@ public:
     typedef QSet<QString> Categories;
     typedef QSet<QString> Masters;
     typedef QSet<QString> Packages;
+    typedef QMap<QString, QString> Layout;
 
     RepositoryParser();
     RepositoryParser(const QDir& dir);
@@ -21,6 +22,7 @@ public:
     Masters getMasters() const;
     Packages getPackages() const;
     Packages getPackages(const QString& strCategory) const;
+    Layout getLayout();
 
 private:
     QDir m_Dir;

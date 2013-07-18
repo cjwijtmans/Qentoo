@@ -15,8 +15,9 @@ public:
     typedef RepositoryParser::Packages Packages;
     typedef QMap<QString, Repository> Repositories;
 
-    Repository(Repositories* repositories = 0);
-    Repository(const RepositoryParser& parser, Repositories* repositories = 0);
+    Repository();
+    Repository(const Repository& other);
+    Repository(const RepositoryParser& parser, Repositories* repositories);
     Categories getCategories() const;
     const QDir& getDir() const;
     QString getName() const;
